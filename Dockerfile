@@ -29,6 +29,9 @@ RUN git clone --depth 1 ${LLAMACPP_REF:+--branch }${LLAMACPP_REF} \
 # GGML_CUDA=ON enables GPU acceleration
 # CMAKE_CUDA_ARCHITECTURES targets specific GPU (120 = Blackwell sm_120)
 # GGML_NATIVE=OFF for cross-compilation (we're building without GPU access)
+# LIBRARY_PATH includes CUDA stubs for libcuda.so (driver provided at runtime by host)
+ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs:${LIBRARY_PATH:-}
+
 RUN cd /opt/llama.cpp && \
     if [ "$BUILD_THREADS" = "0" ]; then \
         BUILD_THREADS=$(nproc); \
@@ -39,6 +42,8 @@ RUN cd /opt/llama.cpp && \
         -DGGML_NATIVE=OFF \
         -DLLAMA_CURL=ON \
         -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_EXE_LINKER_FLAGS="-L/usr/local/cuda/lib64/stubs" \
+        -DCMAKE_SHARED_LINKER_FLAGS="-L/usr/local/cuda/lib64/stubs" \
     && cmake --build build --config Release -j${BUILD_THREADS}
 
 # ---- Runtime Stage ----
