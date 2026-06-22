@@ -32,6 +32,9 @@ RUN git clone --depth 1 ${LLAMACPP_REF:+--branch }${LLAMACPP_REF} \
 # LIBRARY_PATH includes CUDA stubs for libcuda.so (driver provided at runtime by host)
 ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs:${LIBRARY_PATH:-}
 
+# Symlink CUDA stub so linker finds it without explicit -L flags
+RUN ln -sf /usr/local/cuda/lib64/stubs/libcuda.so /usr/lib/x86_64-linux-gnu/libcuda.so
+
 RUN cd /opt/llama.cpp && \
     if [ "$BUILD_THREADS" = "0" ]; then \
         BUILD_THREADS=$(nproc); \
