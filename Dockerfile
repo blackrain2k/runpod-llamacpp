@@ -11,7 +11,7 @@
 # ---- Build Stage ----
 FROM nvidia/cuda:12.8.1-devel-ubuntu24.04 AS builder
 
-ARG LLAMACPP_VERSION=b4250
+ARG LLAMACPP_REF=master
 ARG CUDA_ARCHITECTURES=120
 ARG BUILD_THREADS=0
 
@@ -21,8 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Clone llama.cpp at specific version
-RUN git clone --depth 1 --branch ${LLAMACPP_VERSION} \
+# Clone llama.cpp (branch, tag, or commit hash)
+RUN git clone --depth 1 ${LLAMACPP_REF:+--branch }${LLAMACPP_REF} \
     https://github.com/ggml-org/llama.cpp.git /opt/llama.cpp
 
 # Build with CUDA

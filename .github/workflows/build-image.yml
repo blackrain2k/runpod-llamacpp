@@ -52,5 +52,5 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            LLAMACPP_VERSION=${{ vars.LLAMACPP_VERSION || 'b4250' }}
+            LLAMACPP_REF=${{ vars.LLAMACPP_REF || 'master' }}
             CUDA_ARCHITECTURES=${{ vars.CUDA_ARCHITECTURES || '120' }}
