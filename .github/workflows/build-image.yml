@@ -54,3 +54,12 @@ jobs:
           build-args: |
             LLAMACPP_REF=${{ vars.LLAMACPP_REF || 'master' }}
             CUDA_ARCHITECTURES=${{ vars.CUDA_ARCHITECTURES || '120' }}
+
+      - name: Make package public
+        if: github.ref == 'refs/heads/main'
+        run: |
+          sleep 10
+          gh api -X PATCH /user/packages/container/runpod-llamacpp \
+            -f visibility=public || echo "Package not found yet, will need manual visibility change"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
